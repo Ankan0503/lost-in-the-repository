@@ -1,0 +1,132 @@
+{
+  "scenes": [
+    {
+      "id": "entrance",
+      "title": "The README Gate",
+      "text": "October rain taps the monitor as you stumble through a README-shaped archway. A sign says: FIRST-TIME CONTRIBUTORS, PLEASE DO NOT PANIC. Somewhere in the repository, your first pull request is waiting to be merged before Hacktoberfest ends.",
+      "choices": [
+        {"text": "Follow a flickering green build light", "next": "terminal"},
+        {"text": "Take the path marked CONTRIBUTORS", "next": "lobby"},
+        {"text": "Descend into the stale-branch graveyard", "next": "graveyard"}
+      ]
+    },
+    {
+      "id": "lobby",
+      "title": "The Lobby of Issues",
+      "text": "Issue labels drift like bats: good first issue, help wanted, and one ominous label reading WONTFIX. A ghostly maintainer watches from a ticket queue.",
+      "choices": [
+        {"text": "Ask the maintainer ghost for directions", "next": "maintainer"},
+        {"text": "Search the contributor guide", "next": "archive"},
+        {"text": "Slip through a door labeled CI", "next": "ci"}
+      ]
+    },
+    {
+      "id": "terminal",
+      "title": "The Terminal of Echoes",
+      "text": "A terminal whispers your own typo back at you. Beneath it lies a lantern, helpfully labeled DEBUG LIGHT. It is surprisingly warm.",
+      "choices": [
+        {"text": "Take the DEBUG LIGHT lantern", "next": "workshop", "gives_item": "lantern"},
+        {"text": "Run toward the graveyard", "next": "graveyard"},
+        {"text": "Enter the CI tunnel", "next": "ci"}
+      ]
+    },
+    {
+      "id": "graveyard",
+      "title": "The Foggy Graveyard of Stale Branches",
+      "text": "Branches poke from the fog like crooked headstones: feature/final-final-2 and actually-done-this-time. Merge-conflict monsters growl between them.",
+      "choices": [
+        {"text": "Light the fog with your lantern", "next": "archive", "requires_item": "lantern", "gives_item": "key"},
+        {"text": "Run blindly toward the workshop", "next": "workshop"},
+        {"text": "Let the branches have your username", "next": "bad_ending"}
+      ]
+    },
+    {
+      "id": "archive",
+      "title": "The Archive of Forgotten Docs",
+      "text": "Dusty documentation floats in midair. A brass repository key rests inside a box labeled DOCUMENTATION IS CODE TOO. A map points to an attic and a creaking CI machine.",
+      "choices": [
+        {"text": "Use the repository key to open the attic", "next": "attic", "requires_item": "key"},
+        {"text": "Read the map to the workshop", "next": "workshop"},
+        {"text": "Walk into the CI machine room", "next": "ci"}
+      ]
+    },
+    {
+      "id": "workshop",
+      "title": "The Patch Workshop",
+      "text": "Tools clatter by themselves. On a workbench sits a tiny pull request with your name on it. It needs a badge, a review, and perhaps fewer TODOs.",
+      "choices": [
+        {"text": "Ask the ghost for a review", "next": "maintainer"},
+        {"text": "Polish the patch in the attic", "next": "attic", "requires_item": "badge"},
+        {"text": "Feed the patch to the CI machine", "next": "ci"}
+      ]
+    },
+    {
+      "id": "attic",
+      "title": "The Attic of Unresolved TODOs",
+      "text": "Cobwebs connect ancient TODO comments. Behind one, you find a contributor badge and a golden commit message: fix: definitely not haunted. The commit glows with suspiciously good lint.",
+      "choices": [
+        {"text": "Claim the contributor badge", "next": "workshop", "gives_item": "badge"},
+        {"text": "Take the golden commit", "next": "merge", "gives_item": "golden_commit"},
+        {"text": "Hide under a TODO and wait", "next": "bad_ending"}
+      ]
+    },
+    {
+      "id": "maintainer",
+      "title": "The Grumpy Maintainer Ghost",
+      "text": "\"Did you read CONTRIBUTING.md?\" the ghost booms. You nod. The ghost sighs, reviews your diff, and produces a contributor badge from one transparent sleeve.",
+      "choices": [
+        {"text": "Accept the badge and promise small commits", "next": "workshop", "gives_item": "badge"},
+        {"text": "Argue that tests are a suggestion", "next": "bad_ending"},
+        {"text": "Ask about the golden commit", "next": "attic"}
+      ]
+    },
+    {
+      "id": "ci",
+      "title": "The Creaking CI Pipeline",
+      "text": "A giant machine coughs up warnings. Its conveyor belt is labeled BUILD, TEST, LINT, and PLEASE DO NOT PUSH TO MAIN. One green light flickers.",
+      "choices": [
+        {"text": "Feed it your pull request", "next": "conflict"},
+        {"text": "Repair the test conveyor", "next": "workshop"},
+        {"text": "Pull the emergency lever", "next": "bad_ending"}
+      ]
+    },
+    {
+      "id": "conflict",
+      "title": "The Merge-Conflict Monster",
+      "text": "A monster made of red diffs blocks the conveyor. It demands that you resolve HEAD and incoming changes, preferably without choosing both sides of the same line.",
+      "choices": [
+        {"text": "Resolve the conflict carefully", "next": "merge"},
+        {"text": "Offer it your entire branch", "next": "bad_ending"},
+        {"text": "Back away to the workshop", "next": "workshop"}
+      ]
+    },
+    {
+      "id": "merge",
+      "title": "The Pull Request Drawbridge",
+      "text": "The drawbridge to main lowers. Checks pass, the maintainer ghost hovers, and the repository asks one final question: are you ready to click MERGE?",
+      "choices": [
+        {"text": "Click MERGE with heroic restraint", "next": "good_ending"},
+        {"text": "Use the golden commit's secret rune", "next": "secret_ending", "requires_item": "golden_commit"},
+        {"text": "Close the tab and pretend this was a dream", "next": "bad_ending"}
+      ]
+    },
+    {
+      "id": "good_ending",
+      "title": "A Green Check in the Dark",
+      "text": "Your pull request is merged! The ghost gives a tiny approving nod, the CI machine purrs, and Hacktoberfest gains one brave new contributor.",
+      "ending": {"name": "PR Merged", "type": "good"}
+    },
+    {
+      "id": "bad_ending",
+      "title": "The Repository Claims Another Branch",
+      "text": "The fog closes over your branch. Somewhere, a merge-conflict monster adds a comment: looks good to me (it does not). The repository will still be here next October.",
+      "ending": {"name": "Lost in the Repository", "type": "bad"}
+    },
+    {
+      "id": "secret_ending",
+      "title": "The Maintainer's Hidden Shortcut",
+      "text": "The golden commit reveals a secret path: your PR merges, the ghost smiles, and the repository unlocks a hidden achievement for immaculate commit messages.",
+      "ending": {"name": "The Golden Merge", "type": "secret"}
+    }
+  ]
+}
