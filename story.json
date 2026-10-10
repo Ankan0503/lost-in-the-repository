@@ -33,17 +33,17 @@
     {
       "id": "graveyard",
       "title": "The Foggy Graveyard of Stale Branches",
-      "text": "Branches poke from the fog like crooked headstones: feature/final-final-2 and actually-done-this-time. Merge-conflict monsters growl between them.",
+      "text": "Branches poke from the fog like crooked headstones: feature/final-final-2 and actually-done-this-time. A brass repository key glints among the roots while merge-conflict monsters growl between them.",
       "choices": [
         {"text": "Light the fog with your lantern", "next": "archive", "requires_item": "lantern", "gives_item": "key"},
         {"text": "Run blindly toward the workshop", "next": "workshop"},
-        {"text": "Let the branches have your username", "next": "bad_ending"}
+        {"text": "Let the branches have your username", "next": "spam_ending"}
       ]
     },
     {
       "id": "archive",
       "title": "The Archive of Forgotten Docs",
-      "text": "Dusty documentation floats in midair. A brass repository key rests inside a box labeled DOCUMENTATION IS CODE TOO. A map points to an attic and a creaking CI machine.",
+      "text": "Dusty documentation floats in midair. An empty box labeled DOCUMENTATION IS CODE TOO sits beside a map pointing to an attic and a creaking CI machine. The brass repository key must be somewhere in the fog.",
       "choices": [
         {"text": "Use the repository key to open the attic", "next": "attic", "requires_item": "key"},
         {"text": "Read the map to the workshop", "next": "workshop"},
@@ -67,7 +67,7 @@
       "choices": [
         {"text": "Claim the contributor badge", "next": "workshop", "gives_item": "badge"},
         {"text": "Take the golden commit", "next": "merge", "gives_item": "golden_commit"},
-        {"text": "Hide under a TODO and wait", "next": "bad_ending"}
+        {"text": "Hide under a TODO and wait", "next": "spam_ending"}
       ]
     },
     {
@@ -76,7 +76,7 @@
       "text": "\"Did you read CONTRIBUTING.md?\" the ghost booms. You nod. The ghost sighs, reviews your diff, and produces a contributor badge from one transparent sleeve.",
       "choices": [
         {"text": "Accept the badge and promise small commits", "next": "workshop", "gives_item": "badge"},
-        {"text": "Argue that tests are a suggestion", "next": "bad_ending"},
+        {"text": "Argue that tests are a suggestion", "next": "spam_ending"},
         {"text": "Ask about the golden commit", "next": "attic"}
       ]
     },
@@ -121,6 +121,12 @@
       "title": "The Repository Claims Another Branch",
       "text": "The fog closes over your branch. Somewhere, a merge-conflict monster adds a comment: looks good to me (it does not). The repository will still be here next October.",
       "ending": {"name": "Lost in the Repository", "type": "bad"}
+    },
+    {
+      "id": "spam_ending",
+      "title": "Closed as Suspicious Activity",
+      "text": "The maintainer's warning bot spots your frantic changes and closes the pull request as spam. The CI machine sighs with relief, while a tiny notification says: please read CONTRIBUTING.md next time.",
+      "ending": {"name": "PR Closed as Spam", "type": "bad"}
     },
     {
       "id": "secret_ending",

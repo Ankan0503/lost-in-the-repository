@@ -21,6 +21,8 @@ from game_engine import (
     save_state,
 )
 
+BASE_DIR = Path(__file__).resolve().parent
+
 
 class Display:
     """Terminal output with optional color and typewriter effects."""
@@ -61,12 +63,10 @@ class Display:
 
 
 TITLE = r"""
-  _     ____ ____ _____   _   _ _____ _____ _   _ ____  _____ ____  _____ ___  ______   ___  _  _
- | |   |  _ \  _ \_   _| | | | | ____| ____| \ | |  _ \| ____|  _ \|_   _/ _ \|  ____| / _ \| || |
- | |   | |_) | |_) || |   | |_| |  _| |  _| |  \| | |_) |  _| | |_) | | || | | | |__   | | | | || |_
- | |___|  __/|  _ < | |   |  _  | |___| |___| |\  |  _ <| |___|  _ <  | || |_| |  __|  | |_| |__   _|
- |_____|_|   |_| \_\|_|   |_| |_|_____|_____|_| \_|_| \_\_____|_| \_\ |_| \___/|_|      \___/   |_|
-                         LOST IN THE REPOSITORY
++--------------------------------------------------------------------------+
+|                         LOST IN THE                                      |
+|                           REPOSITORY                                     |
++--------------------------------------------------------------------------+
 """
 
 
@@ -82,8 +82,10 @@ def show_scene(display: Display, scene: Scene, state: GameState) -> None:
             display.say(f"  {number}. {choice.text} [needs {needed}]", "dim")
 
 
-def ending_count(path: Path, ending_name: str) -> tuple[int, int]:
+def ending_count(path: Path, ending_name: str, total: int | None = None) -> tuple[int, int]:
     """Record an ending and return discovered and total counts."""
+    if total is None:
+        total = count_endings(load_story(BASE_DIR / "story.json"))
     discovered: set[str] = set()
     if path.exists():
         try:
@@ -92,16 +94,23 @@ def ending_count(path: Path, ending_name: str) -> tuple[int, int]:
             discovered = set()
     discovered.add(ending_name)
     path.write_text(json.dumps(sorted(discovered), indent=2), encoding="utf-8")
-    return len(discovered), 4
+    return len(discovered), total
+
+
+def count_endings(story: dict[str, Scene]) -> int:
+    """Return the number of ending scenes in a loaded story."""
+    return sum(scene.ending is not None for scene in story.values())
 
 
 def run_game(args: argparse.Namespace) -> None:
     """Run the main game loop."""
     display = Display(args.fast, args.no_color)
-    story = load_story()
-    display.say(TITLE, "cyan")
+    story = load_story(BASE_DIR / "story.json")
+    print(display.color(TITLE, "cyan"))
     try:
-        state = load_state() if args.load else new_game()
+        state = load_state(BASE_DIR / "savegame.json") if args.load else new_game()
+        if state.current_scene not in story:
+            raise KeyError(state.current_scene)
     except (OSError, KeyError, json.JSONDecodeError):
         display.say("No usable save found, so a fresh adventure begins.", "yellow")
         state = new_game()
@@ -111,9 +120,15 @@ def run_game(args: argparse.Namespace) -> None:
         if scene.ending:
             display.say(f"\n{scene.ending['name']}", "green" if scene.ending["type"] != "bad" else "red")
             display.say(scene.text)
-            found, total = ending_count(Path("endings.json"), scene.ending["name"])
+            found, total = ending_count(
+                BASE_DIR / "endings.json", scene.ending["name"], count_endings(story)
+            )
             display.say(f"Endings discovered: {found}/{total}", "cyan")
-            answer = input("\nPlay again? (y/n): ").strip().lower()
+            try:
+                answer = input("\nPlay again? (y/n): ").strip().lower()
+            except (EOFError, KeyboardInterrupt):
+                display.say("\nGoodbye!", "yellow")
+                return
             if answer.startswith("y"):
                 state = new_game()
                 continue
@@ -122,13 +137,16 @@ def run_game(args: argparse.Namespace) -> None:
         show_scene(display, scene, state)
         try:
             command, number = parse_input(input("\n> "), len(scene.choices))
+        except (EOFError, KeyboardInterrupt):
+            display.say("\nGoodbye!", "yellow")
+            return
         except ValueError as error:
             display.say(str(error), "red")
             continue
         if command == "i":
             display.say("Inventory: " + (", ".join(state.inventory) or "empty"), "cyan")
         elif command == "s":
-            save_state(state)
+            save_state(state, BASE_DIR / "savegame.json")
             display.say("Progress saved to savegame.json.", "green")
         elif command == "h":
             display.say("Enter a choice number. i = inventory, s = save, h = help, q = quit.", "cyan")

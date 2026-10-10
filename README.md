@@ -6,10 +6,12 @@
 
 - JSON graph keeps story content separate from the Python engine.
 - Inventory items unlock routes and secret content.
-- Four endings, including good, bad, and secret endings.
+- Four endings: one good, two bad, and one secret ending.
 - Typewriter text, ANSI colors, ASCII title art, and Windows terminal support.
 - Save/resume progress and persistent ending discovery.
-- Standard library only, with `unittest` coverage for the graph and engine.
+- Standard library only, with `unittest` coverage for graph links, inventory-aware
+ending reachability, ending types, secret-item gating, save/load round trips,
+ending totals, inventory logic, and input parsing.
 
 ## Run
 
@@ -17,11 +19,16 @@
 python adventure.py
 ```
 
+The game resolves `story.json`, `savegame.json`, and `endings.json` beside
+`adventure.py`, so it can also be launched from another folder with a path
+such as `python path/to/adventure.py`.
+
 Flags:
 
 - `--fast` disables the typewriter effect.
 - `--no-color` disables ANSI colors.
-- `--load` resumes from `savegame.json`.
+- `--load` resumes from the save beside `adventure.py`; an invalid or missing
+  save starts a fresh game.
 
 ## How to play
 
